@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tin nhắn Messenger đi qua mạng như thế nào?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#E9EFF4;--card:#fff;--ink:#12263A;--mut:#5B6B7B;--line:#C3D0DB;--blue:#0A7CFF;--bs:#DCEBFF;--ok:#13875A;--okb:#D8F3E6;--bad:#C93A36;--badb:#FBE0DF;--grid:#D5E0E9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1824;--card:#14263A;--ink:#E6EEF6;--mut:#93A5B7;--line:#2A4158;--blue:#4DA3FF;--bs:#183A5E;--ok:#3DD598;--okb:#12392D;--bad:#FF6B66;--badb:#4A1D1F;--grid:#1A2D41}}
+:root[data-theme="dark"]{--bg:#0C1824;--card:#14263A;--ink:#E6EEF6;--mut:#93A5B7;--line:#2A4158;--blue:#4DA3FF;--bs:#183A5E;--ok:#3DD598;--okb:#12392D;--bad:#FF6B66;--badb:#4A1D1F;--grid:#1A2D41}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1020px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:clamp(22px,4vw,32px);line-height:1.2;margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0 0 18px;max-width:60ch}
+.pills{display:flex;gap:6px;margin-bottom:16px}
+.pills i{flex:1;height:8px;border-radius:4px;background:var(--line)}
+.pills i.cur{background:var(--blue)}.pills i.ok{background:var(--ok)}.pills i.bad{background:var(--bad)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px}
+#ill{padding:14px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-color:var(--card);position:sticky;top:12px}
+@media(max-width:760px){#ill{position:static}}
+#ill svg{width:100%;max-height:420px;display:block;margin:0 auto}
+.cap{margin:8px 0 0;font-size:13px;color:var(--mut);text-align:center;background:var(--card);border-radius:8px;padding:4px 8px}
+.swap{animation:sw .35s ease}
+@keyframes sw{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#qa{padding:20px}
+.qn{font-size:13px;color:var(--mut);margin:0 0 6px;font-weight:500}
+.q{font-size:18px;font-weight:700;margin:0 0 16px;line-height:1.45}
+.opt{display:flex;gap:12px;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--bs);color:var(--blue);display:grid;place-items:center;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--okb)}.opt.ok b{background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--badb)}.opt.bad b{background:var(--bad);color:#fff}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#ex{display:none;border-left:4px solid var(--blue);background:var(--bs);border-radius:0 10px 10px 0;padding:12px 14px;margin:6px 0 14px}
+#ex strong{display:block;margin-bottom:2px}
+.btn{font:inherit;font-weight:700;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 20px;cursor:pointer}
+#nx{display:none}
+#res{display:none;padding:24px;text-align:center}
+#res h2{font-size:48px;margin:0}
+#res ul{list-style:none;padding:0;margin:16px auto;max-width:480px;text-align:left}
+#res li{padding:8px 0;border-bottom:1px solid var(--line)}
+/* svg */
+svg text{fill:var(--ink);font-family:inherit}
+svg .w{fill:#fff}svg .m{fill:var(--mut)}svg .gd{fill:var(--ok);font-weight:700}svg .rd{fill:var(--bad);font-weight:700}svg .b{font-weight:700}
+.bx{fill:var(--card);stroke:var(--line);stroke-width:1.5;transition:fill .2s,stroke .2s}
+.dash .bx{stroke-dasharray:5 4}
+g.ok .bx{fill:var(--okb);stroke:var(--ok);stroke-width:3;stroke-dasharray:none}
+g.bad .bx{fill:var(--badb);stroke:var(--bad);stroke-width:3}
+.fl{stroke:var(--blue);stroke-width:2.5;fill:none;stroke-dasharray:6 6;animation:fl 1s linear infinite}
+@keyframes fl{to{stroke-dashoffset:-12}}
+@media(prefers-reduced-motion:reduce){.fl,.swap{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tin nhắn Messenger đi qua mạng như thế nào?</h1>
+  <p class="sub">5 câu hỏi về mô hình OSI, TLS và mã hóa đầu cuối. Chọn một đáp án để xem lời giải thích và hình minh họa.</p>
+  <div class="pills" id="pills"></div>
+  <div class="grid" id="main">
+    <div class="panel" id="ill"></div>
+    <div class="panel" id="qa">
+      <p class="qn" id="qn"></p>
+      <p class="q" id="q"></p>
+      <div id="opts"></div>
+      <div id="ex"></div>
+      <button class="btn" id="nx"></button>
+    </div>
+  </div>
+  <div class="panel" id="res"></div>
+</div>
+<script>
+const g=(k,x,y,w,h,s,o={})=>`<g data-k="${k}" class="${o.c||''}"><rect class="bx" x="${x}" y="${y}" width="${w}" height="${h}" rx="${o.r||8}"/><text x="${x+w/2}" y="${o.ty||y+h/2+4}" text-anchor="middle" font-size="${o.fs||12}" class="${o.t||''}">${s}</text></g>`;
+const t=(x,y,s,c='',fs=12,a='middle')=>`<text x="${x}" y="${y}" font-size="${fs}" text-anchor="${a}" class="${c}">${s}</text>`;
+const ln=(d)=>`<path class="fl" d="${d}"/>`;
+
+const layers=[['7','Ứng dụng','C'],['6','Trình diễn','A'],['5','Phiên','D'],['4','Giao vận','B'],['3','Mạng',''],['2','Liên kết dữ liệu',''],['1','Vật lý','']];
+const Q=[
+{h:290,cap:"Tin nhắn đi xuống qua 7 tầng OSI, bắt đầu từ tầng trên cùng.",
+ svg:`<rect x="50" y="4" width="200" height="34" rx="17" fill="var(--blue)"/>${t(150,25,'Alo, tối nay đi ăn không?','w',12)}${ln('M150 40V54')}`+
+ layers.map((l,i)=>g(l[2],30,56+i*33,240,28,`Tầng ${l[0]} · ${l[1]}`)).join('')+ln('M292 60V280'),
+ q:'Khi bạn gõ dòng chữ "Alo, tối nay đi ăn không?" vào ứng dụng Messenger và nhấn gửi, tầng nào trong mô hình OSI chịu trách nhiệm tiếp nhận văn bản thô này đầu tiên?',
+ o:['Tầng Trình diễn (Presentation Layer)','Tầng Giao vận (Transport Layer)','Tầng Ứng dụng (Application Layer)','Tầng Phiên (Session Layer)'],a:'C',
+ ex:'Tầng Ứng dụng là nơi giao tiếp trực tiếp với người dùng và phần mềm.'},
+{h:250,cap:"Rớt mạng ở 60%: tiếp tục từ trạm kiểm soát, không gửi lại từ đầu.",
+ svg:t(20,36,'🎬 video_dai.mp4','b',13,'start')+`<rect x="20" y="70" width="280" height="16" rx="8" fill="var(--line)"/><rect x="20" y="70" width="168" height="16" rx="8" fill="var(--blue)"/>`+
+ t(20,62,'Đã gửi 60%','m',11,'start')+`<path d="M188 58V98" stroke="var(--ok)" stroke-width="3"/>`+t(194,56,'🚩','',16,'start')+t(230,56,'📵','',15,'start')+t(300,60,'rớt Wi‑Fi','rd',11,'end')+
+ t(188,116,'Trạm kiểm soát','gd',11)+t(160,144,'Gửi tiếp từ 60%, không phải từ 0%','b',12)+t(160,166,'Tầng nào giữ trạm kiểm soát?','m',11)+
+ g('A',20,174,135,34,'Tầng 1 · Vật lý')+g('B',165,174,135,34,'Tầng 3 · Mạng')+g('C',20,214,135,34,'Tầng 2 · Liên kết',{})+g('D',165,214,135,34,'Tầng 5 · Phiên'),
+ q:'Bạn đang gửi một đoạn video dài cho bạn bè qua Messenger thì đột ngột rớt Wi-Fi. Khi có mạng lại, Messenger tiếp tục gửi phần video còn lại thay vì phải tải lại từ con số 0. Đây là nhờ tính năng đánh dấu "Trạm kiểm soát" (Checkpoint) của tầng nào?',
+ o:['Tầng Vật lý (Physical Layer)','Tầng Mạng (Network Layer)','Tầng Liên kết dữ liệu (Data Link Layer)','Tầng Phiên (Session Layer)'],a:'D',
+ ex:'Tầng Phiên quản lý và duy trì trạng thái của cuộc hội thoại, cho phép resume (gửi/tải tiếp) dữ liệu.'},
+{h:300,cap:"TLS gồm 3 trụ cột bên trong lá chắn. DNS nằm ngoài.",
+ svg:`<path d="M160 14L250 44V120C250 180 212 218 160 240C108 218 70 180 70 120V44Z" fill="var(--bs)" stroke="var(--blue)" stroke-width="3"/>`+t(160,36,'🔒 TLS','b',13)+
+ g('A',95,52,130,38,'Mã hóa',{})+g('B',95,98,130,38,'Xác thực: chứng chỉ số')+g('D',95,144,130,38,'Toàn vẹn')+
+ t(160,204,'chỉ lo 3 việc','m',11)+g('C',70,256,180,34,'DNS: tên miền → IP',{c:'dash'})+t(160,250,'ngoài lá chắn','m',11),
+ q:'Giao thức TLS bảo vệ tin nhắn Messenger của bạn bằng 3 cơ chế cốt lõi. Cơ chế nào dưới đây KHÔNG thuộc bộ bảo mật của TLS?',
+ o:['Mã hóa (Encryption): Biến văn bản thành chuỗi ký tự vô nghĩa.','Xác thực (Authentication): Kiểm tra chứng chỉ số của máy chủ Meta (Facebook).','Phân giải tên miền (DNS): Đổi tên miền facebook.com thành địa chỉ IP.','Tính toàn vẹn (Integrity): Đảm bảo tin nhắn không bị kẻ xấu sửa đổi giữa đường.'],a:'C',
+ ex:'DNS là một giao thức riêng biệt, không phải là một phần của quy trình bảo mật TLS. TLS chỉ lo mã hóa, xác thực và toàn vẹn.'},
+{h:296,cap:"Gói tin được đóng gói nhiều lớp; IP giúp định tuyến từ nhà đến Meta.",
+ svg:g('A',10,28,300,176,'Tầng 2 · Khung: địa chỉ MAC',{ty:46,c:''})+g('B',24,58,272,134,'Tầng 3 · IP nguồn → IP đích',{ty:76})+g('C',38,88,244,92,'Tầng 4 · Cổng đích 443',{ty:106})+
+ g('',52,118,216,50,'Nội dung tin nhắn (đã mã hóa)',{fs:11})+g('D',80,212,160,26,'Session ID · tầng 5',{c:'dash',fs:11})+
+ ln('M40 262H285')+[100,170,235].map(x=>`<circle cx="${x}" cy="262" r="6" fill="var(--blue)"/>`).join('')+t(14,270,'🏠','',20,'start')+t(290,270,'🖥','',20,'start')+t(26,290,'Nhà bạn','m',10)+t(300,290,'Meta','m',10),
+ q:'Khi dữ liệu đi xuống Tầng 3 (Tầng Mạng - Network Layer), gói tin (Packet) sẽ được "dán" thêm loại thông tin nào để định tuyến (tìm đường đi) trên Internet từ nhà bạn đến máy chủ của Meta?',
+ o:['Địa chỉ MAC của cục Router Wi-Fi','Địa chỉ IP (IP nguồn và IP đích)','Cổng giao tiếp (Port đích là 443)','Số định danh phiên (Session ID)'],a:'B',
+ ex:'Tầng Mạng sử dụng địa chỉ IP để định tuyến dữ liệu trên bản đồ Internet toàn cầu. Địa chỉ MAC thuộc về Tầng 2.'},
+{h:270,cap:"Với E2EE, máy chủ Meta chỉ chuyển tiếp chuỗi mã mà không đọc được.",
+ svg:t(20,22,'Chỉ dùng TLS','b',12,'start')+t(20,66,'📱','',30,'start')+ln('M58 50H150')+t(94,44,'🔒','',14)+g('',150,28,130,44,'Máy chủ Meta')+t(215,92,'👁 đọc được nội dung','rd',11)+
+ t(20,126,'TLS + mã hóa đầu cuối (E2EE)','b',12,'start')+t(20,172,'📱','',30,'start')+t(268,172,'📱','',30,'start')+ln('M58 156H100')+ln('M220 156H264')+t(70,150,'🔒','',13)+t(250,150,'🔒','',13)+
+ g('C',100,134,120,44,'Máy chủ Meta')+t(160,196,'chỉ thấy chuỗi mã vô nghĩa','gd',11)+
+ g('A',10,226,96,32,'Nhanh gấp đôi',{c:'dash',fs:11})+g('B',112,226,96,32,'Bỏ handshake',{c:'dash',fs:11})+g('D',214,226,96,32,'Không cần IP',{c:'dash',fs:11}),
+ q:'TLS giúp bảo vệ tin nhắn Messenger trên đường truyền từ điện thoại đến máy chủ Meta. Tuy nhiên, Messenger hiện nay đã áp dụng thêm "Mã hóa đầu cuối" (End-to-End Encryption - E2EE). Ưu điểm vượt trội của E2EE so với chỉ dùng TLS là gì?',
+ o:['E2EE giúp gửi video và hình ảnh với tốc độ nhanh gấp đôi.','E2EE loại bỏ hoàn toàn các bước "bắt tay" (handshake) phức tạp để tiết kiệm pin.','Ngay cả máy chủ của Meta và nhân viên của họ cũng không thể giải mã và đọc được nội dung tin nhắn.','E2EE có thể truyền dữ liệu mà không cần thông qua địa chỉ IP.'],a:'C',
+ ex:'Chữ "Đầu - Cuối" có nghĩa là dữ liệu chỉ có thể giải mã tại thiết bị của người gửi và người nhận, bỏ qua hoàn toàn trạm trung chuyển là máy chủ ứng dụng.'}
+];
+const $=s=>document.querySelector(s),L='ABCD';
+let i=0,ans=[];
+function pills(){$('#pills').innerHTML=Q.map((q,n)=>`<i class="${ans[n]?(ans[n]===q.a?'ok':'bad'):n===i?'cur':''}"></i>`).join('')}
+function show(){
+  const q=Q[i];
+  $('#res').style.display='none';$('#main').style.display='';
+  $('#ill').innerHTML=`<div class="swap"><svg viewBox="0 0 320 ${q.h}" role="img" aria-label="${q.cap}">${q.svg}</svg><p class="cap">${q.cap}</p></div>`;
+  $('#qn').textContent=`Câu ${i+1} / ${Q.length}`;$('#q').textContent=q.q;
+  $('#opts').innerHTML=q.o.map((s,n)=>`<button class="opt" data-l="${L[n]}"><b>${L[n]}</b><span>${s}</span></button>`).join('');
+  $('#ex').style.display='none';$('#nx').style.display='none';
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b.dataset.l));
+  pills();
+}
+function pick(l){
+  const q=Q[i];ans[i]=l;
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.dataset.l===q.a)b.classList.add('ok');else if(b.dataset.l===l)b.classList.add('bad')});
+  const svg=document.querySelector('#ill svg');
+  svg.querySelector(`[data-k="${q.a}"]`)?.classList.add('ok');
+  if(l!==q.a)svg.querySelector(`[data-k="${l}"]`)?.classList.add('bad');
+  $('#ex').innerHTML=`<strong>${l===q.a?'Chính xác!':'Chưa đúng. Đáp án đúng là '+q.a+'.'}</strong>${q.ex}`;
+  $('#ex').style.display='block';
+  $('#nx').textContent=i<Q.length-1?'Câu tiếp theo':'Xem kết quả';$('#nx').style.display='inline-block';
+  pills();
+}
+$('#nx').onclick=()=>{i<Q.length-1?(i++,show()):result()};
+function result(){
+  const s=ans.filter((a,n)=>a===Q[n].a).length;
+  $('#main').style.display='none';$('#res').style.display='block';
+  $('#res').innerHTML=`<h2>${s} / ${Q.length}</h2><p>${s===5?'Tuyệt vời, bạn nắm chắc cả 5 câu.':s>=3?'Khá tốt! Xem lại các câu sai bên dưới.':'Hãy ôn lại và thử một lần nữa.'}</p><ul>${Q.map((q,n)=>`<li>${ans[n]===q.a?'✅':'❌'} Câu ${n+1}: đáp án ${q.a}${ans[n]!==q.a?` (bạn chọn ${ans[n]})`:''}</li>`).join('')}</ul><button class="btn" id="rs">Làm lại</button>`;
+  $('#rs').onclick=()=>{i=0;ans=[];show()};
+  pills();
+}
+show();
+</script>
+</body>
+</html>
